@@ -1,0 +1,138 @@
+{
+   "info":{
+      "abi_version":"2024_0",
+      "arch":"wasm32",
+      "platform":"emscripten_3_1_58",
+      "python":"3.12.1",
+      "version":"0.26.2"
+   },
+   "packages":{
+      "bcrypt":{
+         "depends":[
+            
+         ],
+         "file_name":"bcrypt-4.1.2-cp312-cp312-pyodide_2024_0_wasm32.whl",
+         "imports":[
+            "bcrypt"
+         ],
+         "install_dir":"site",
+         "name":"bcrypt",
+         "package_type":"package",
+         "sha256":"b41c5c91cdbff8cef054a9dd8d5fe51afcae562fbf0757d8ff546a04b7496de5",
+         "shared_library":false,
+         "unvendored_tests":false,
+         "version":"4.1.2"
+      },
+      "idna":{
+         "depends":[
+            
+         ],
+         "file_name":"idna-3.7-py3-none-any.whl",
+         "imports":[
+            "idna"
+         ],
+         "install_dir":"site",
+         "name":"idna",
+         "package_type":"package",
+         "sha256":"ff695f90301caac96e76ba066a34979f439601baa989b3ee85dd9e943dfbc0e2",
+         "shared_library":false,
+         "unvendored_tests":false,
+         "version":"3.7"
+      },
+      "micropip":{
+         "depends":[
+            "packaging"
+         ],
+         "file_name":"micropip-0.6.0-py3-none-any.whl",
+         "imports":[
+            "micropip"
+         ],
+         "install_dir":"site",
+         "name":"micropip",
+         "package_type":"package",
+         "sha256":"eab82bfa421d1b241dc8f0d00a731776f1526726c2e1eff54a40c1817620141d",
+         "shared_library":false,
+         "unvendored_tests":false,
+         "version":"0.6.0"
+      },
+      "packaging":{
+         "depends":[
+            
+         ],
+         "file_name":"packaging-23.2-py3-none-any.whl",
+         "imports":[
+            "packaging"
+         ],
+         "install_dir":"site",
+         "name":"packaging",
+         "package_type":"package",
+         "sha256":"86884228b6bdea119d430dc08ab208aa19c3682da6edfafb397ca3eb20089cbd",
+         "shared_library":false,
+         "unvendored_tests":false,
+         "version":"23.2"
+      },
+      "requests": {
+         "depends": [
+            "charset-normalizer",
+            "idna",
+            "urllib3",
+            "certifi"
+         ],
+         "file_name": "requests-2.31.0-py3-none-any.whl",
+         "imports": [
+            "requests"
+         ],
+         "install_dir": "site",
+         "name": "requests",
+         "package_type": "package",
+         "sha256": "0a7f834e19b70aed13f03a1a45ae566765e3dcc4478fca84b324bfb7059bee28",
+         "shared_library": false,
+         "unvendored_tests": false,
+         "version": "2.31.0"
+      },
+      "urllib3": {
+         "depends": [],
+         "file_name": "urllib3-2.2.1-py3-none-any.whl",
+         "imports": [
+            "urllib3"
+         ],
+         "install_dir": "site",
+         "name": "urllib3",
+         "package_type": "package",
+         "sha256": "22a5514a2a5f02204e5447b8bc5da248d41df1c024b64bcbdf6ebf1223fd58b8",
+         "shared_library": false,
+         "unvendored_tests": false,
+         "version": "2.2.1"
+      },
+
+      "certifi": {
+         "depends": [],
+         "file_name": "certifi-2024.2.2-py3-none-any.whl",
+         "imports": [
+            "certifi"
+         ],
+         "install_dir": "site",
+         "name": "certifi",
+         "package_type": "package",
+         "sha256": "4510575e9f8975facae14e9a22445374cc8439a46fce4b72e6f887ec9cda02e0",
+         "shared_library": false,
+         "unvendored_tests": false,
+         "version": "2024.2.2"
+      },
+
+      "charset-normalizer": {
+         "depends": [],
+         "file_name": "charset_normalizer-3.3.2-py3-none-any.whl",
+         "imports": [
+            "charset_normalizer"
+         ],
+         "install_dir": "site",
+         "name": "charset-normalizer",
+         "package_type": "package",
+         "sha256": "af149540cc3083b7c662fc2a795ceff445fc2432cf0351b8b8e00d74e6390c8b",
+         "shared_library": false,
+         "unvendored_tests": false,
+         "version": "3.3.2"
+      }
+   }
+}
