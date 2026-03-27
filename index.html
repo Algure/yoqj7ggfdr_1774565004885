@@ -1,0 +1,1655 @@
+    <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>BookKeep</title>
+ 
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+
+  <style>
+    body { margin: 0; font-family: Arial; }
+    nav { background: #222; padding: 10px; }
+    nav a { color: white; margin-right: 15px; cursor: pointer; }
+    
+    
+           /* Hide scrollbars for Chrome, Safari, and Opera */
+            *::-webkit-scrollbar {
+                display: none;
+            }
+           
+            html, body {
+                overflow-x: hidden; 
+                overflow-y: auto; 
+                margin: 0; 
+                padding: 0;
+                height: 100%;
+            }
+          
+             #app {
+              width: 100%;
+              height: 100vh;
+              height: 100svh;
+              height: 100dvh;
+              height: calc(var(--app-vh) * 100);
+              min-height: 100vh;
+              min-height: 100svh;
+              min-height: 100dvh;
+              min-height: calc(var(--app-vh) * 100);
+              position: relative;
+              overflow: hidden;
+              padding-top: env(safe-area-inset-top, 0px);
+              padding-bottom: env(safe-area-inset-bottom, 0px);
+              box-sizing: border-box;
+            }
+
+            
+            * {
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            
+            .shifting-gradient {
+                /*background-size: 600% 600%;
+                animation: gradientFlux 8s ease infinite;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                transition: transform 0.3s;*/
+              }
+          
+            #top-progress {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0,0,0,0.6);
+              display: block;
+              justify-content: center;
+              align-items: center;
+              z-index: 9999;
+            }
+            
+            #top-progress.show {
+              display: flex;
+            }
+            #top-progress .progress-omicon {
+              width: 200px;
+              height: 200px;
+              animation: omicon-shade 1.2s linear infinite;
+              border-radius: 50%;
+              box-shadow: 0 0 24px 0 rgba(85,68,255,0.3);
+              background: transparent;
+              object-fit: contain;
+              display: block; 
+              position: absolute;
+              top: calc(50% - 100px);
+              left: calc(50% - 100px);
+            }
+            @keyframes omicon-shade {
+              0%   { filter: brightness(1) drop-shadow(0 0 0 #5544FF); }
+              25%  { filter: brightness(1.2) drop-shadow(0 0 16px #44ffd9); }
+              50%  { filter: brightness(1.4) drop-shadow(0 0 24px #ff44c2); }
+              75%  { filter: brightness(1.2) drop-shadow(0 0 16px #5544FF); }
+              100% { filter: brightness(1) drop-shadow(0 0 0 #5544FF); }
+            }
+              .animated-gradient-box:hover {
+                transform: scale(1.05);
+              }
+          
+            @keyframes indeterminate {
+              0% { transform: translateX(0%); }
+              100% { transform: translateX(400%); }
+            }
+              .animated-gradient-box:hover {
+                transform: scale(1.05);
+              }
+          
+              @keyframes gradientFlux {
+                0% {
+                  background-position: 0% 50%;
+                }
+                50% {
+                  background-position: 100% 50%;
+                }
+                100% {
+                  background-position: 0% 50%;
+                }
+              }
+              
+            .click-shade {
+              background-color: #e0e0e0 !important;
+            }
+            
+            input:focus {
+              border: none;        
+              outline: none;  
+            }
+            
+             .overlaysvs {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 999;
+              }
+          
+              .spinner {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 20px;
+                animation: spin 1s linear infinite;
+              }
+          
+              @keyframes spin {
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+          
+              /* Toast */
+              .toastsvs {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background-color: #333;
+                color: #fff;
+                padding: 15px 25px;
+                border-radius: 4px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+                z-index: 1000;
+              }
+          
+              .toastsvs.show {
+                opacity: 1;
+              }
+              .dropdown-menu {
+                position: absolute;
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                min-width: 140px;
+                overflow-y: auto;
+                max-height: 300px;
+                z-index: 1000;
+                display: none;
+                elevation: 4;
+              }
+          
+              .dropdown-item {
+                padding: 10px 16px;
+                cursor: pointer;
+                white-space: nowrap;
+              }
+          
+              .dropdown-item:hover {
+                background: #f0f0f0;
+              }
+              
+               button {
+                margin: 20px;
+                padding: 12px 20px;
+                font-size: 16px;
+              }
+              .savr-tooltip-widget {
+                          position: fixed;
+                          pointer-events: none;
+                          background: #222;
+                          color: #fff;
+                          padding: 8px 14px;
+                          border-radius: 6px;
+                          font-size: 14px;
+                          white-space: nowrap;
+                          opacity: 0;
+                          transition: opacity 0.15s;
+                          z-index: 99999;
+                          border: 2px solid #fff;
+                          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                          font-weight: bold;
+                        }
+                        .savr-tooltip-widget.visible {
+                          opacity: 1;
+                        }
+                        
+              .drawupOverlay-panel-container {
+              position: fixed;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              height: 0;
+              background: #aa0000;
+              box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+              border-top-left-radius: 8px;
+              border-top-right-radius: 8px;
+              transition: height 0.3s ease;
+              /* overflow: hidden; */
+              z-index: 1000;
+              display: flex;
+              flex-direction: column;
+            }
+        
+            .drawupOverlay-panel-header-draggable {
+              height: 30px;
+              background: #00000080;
+              text-align: center;
+              line-height: 30px;
+              font-weight: normal;
+              font-size: 14px;
+              color: #666;
+              cursor: grab;
+              user-select: none;
+              border-top-left-radius: 8px;
+              border-top-right-radius: 8px;
+              flex-shrink: 0;
+            }
+        
+            .drawupOverlay-panel-header-draggable::before {
+              content: '';
+              display: inline-block;
+              width: 30px;
+              height: 3px;
+              background: #ccc;
+              border-radius: 2px;
+              vertical-align: middle;
+              margin-right: 8px;
+            }
+        
+            .drawupOverlay-panel-content-scrollable {  
+                flex: 1 1 auto;
+                overflow-y: auto;
+                display: flex;
+                justify-content: center;
+                padding: 20px;
+                /* Hide scrollbar but keep functionality */
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE and Edge */
+            }
+        
+            .drawupOverlay-content-wrapper-main {
+              width: 100%;
+              max-width: 500px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 20px;
+            }
+        
+            .drawupOverlay-image-container-display {
+              width: 500px;
+              height: 500px;
+              min-height: 500px;
+              max-width: 100%;
+              position: relative;
+              /* overflow: hidden; */
+              border-radius: 8px;
+              cursor: zoom-in;
+              background: #ddd;
+              display: none;
+              align-items: center;
+              justify-content: center;
+              border: 2px solid #999;
+              order: -1; /* Makes this first element */
+            }
+        
+            .drawupOverlay-image-container-display.show {
+              display: flex;
+            }
+        
+            .drawupOverlay-content-wrapper-main img {
+              width: 500px;
+              height: 500px;
+              object-fit: cover;
+              border-radius: 8px;
+              transition: transform 0.3s ease;
+              display: block;
+            }
+        
+            .drawupOverlay-content-wrapper-main img.zoomed {
+              transform: scale(2);
+              cursor: zoom-out;
+            }
+        
+            .drawupOverlay-placeholder-text-element {
+              color: #666;
+              font-size: 18px;
+              text-align: center;
+              font-weight: bold;
+            }
+        
+            .drawupOverlay-title-text-element {
+              font-size: 24px;
+              font-weight: bold;
+              text-align: center;
+              display: none;
+            }
+        
+            .drawupOverlay-title-text-element.show {
+              display: block;
+            }
+        
+            .drawupOverlay-details-text-element {
+              font-size: 16px;
+              color: #555;
+              text-align: justify;
+              line-height: 1.6;
+              width: 100%;
+              max-width: 480px;
+              padding: 0 10px;
+              display: none;
+            }
+        
+            .drawupOverlay-details-text-element.show {
+              display: block;
+              text-align: justify;
+            }
+        
+            .drawupOverlay-button-column-container {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              gap: 12px;
+              align-items: center;
+            }
+        
+            .drawupOverlay-button-column-container button {
+              width: 80%;
+              max-width: 300px;
+              padding: 14px 20px;
+              font-size: 16px;
+              border: 1px solid #ddd;
+              background: #fff;
+              color: #333;
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.2s;
+            }
+        
+            .drawupOverlay-button-column-container button:hover {
+              background: #f0f0f0;
+              border-color: #999;
+            }
+        
+            .drawupOverlay-backdrop-modal {
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background: rgba(0,0,0,0.1);
+              z-index: 999;
+              display: none;
+            }
+        
+            .drawupOverlay-backdrop-modal.show {
+              display: block;
+            }
+  </style>
+  
+<script src="chart.js"></script>
+       <script type="text/javascript" src="pyodide.js"></script>
+</head>
+<body>
+
+<div id="app"></div>
+
+ <div class="drawupOverlay-backdrop-modal" id="drawupOverlayBackdrop_Modal"></div>
+
+  <div class="drawupOverlay-panel-container" id="drawupOverlayPanel_Container">
+    <div class="drawupOverlay-panel-header-draggable" id="drawupOverlayHeader_Draggable"></div>
+    <div class="drawupOverlay-panel-content-scrollable">
+      <div class="drawupOverlay-content-wrapper-main" id="drawupOverlayContentWrapper_Main">
+        <div class="drawupOverlay-image-container-display" id="drawupOverlayImageContainer_Display">
+          <img id="drawupOverlayPanelImage_Element" src="" alt="Panel Image" style="display: none;" />
+          <div class="drawupOverlay-placeholder-text-element" id="drawupOverlayPlaceholder_Text">No Image</div>
+        </div>
+        <div class="drawupOverlay-title-text-element" id="drawupOverlayTitle_Element">Welcome to the Panel</div>
+        <div class="drawupOverlay-details-text-element" id="drawupOverlayDetails_Element">
+          This is a detailed description that wraps around the content beneath the title.
+        </div>
+        <div class="drawupOverlay-button-column-container" id="drawupOverlayButtonColumn_Container">
+          <button id="drawupOverlayCloseBtn_Default">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="overlaysvs" id="overlaysvs">
+    <svg class="spinner" viewBox="0 0 50 50">
+        <circle
+          cx="25"
+          cy="25"
+          r="20"
+          fill="none"
+          stroke="#007BFF"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-dasharray="90,150"
+        />
+      </svg>
+  </div>
+
+  <div class="toastsvs" id="toastsvs">This is a toast!</div>
+  
+<div id="top-progress" class="top-progress">
+  <img src="omicon.png" alt="Progress" class="progress-omicon" />
+</div>
+  
+ 
+  <script>
+      
+    const panel = document.getElementById('drawupOverlayPanel_Container');
+    const openBtn = document.getElementById('drawupOverlayOpenBtn_Main');
+    const testBtn = document.getElementById('drawupOverlayTestBtn_Demo');
+    const closeBtn = document.getElementById('drawupOverlayCloseBtn_Default');
+    const header = document.getElementById('drawupOverlayHeader_Draggable');
+    const backdrop = document.getElementById('drawupOverlayBackdrop_Modal');
+    const imageContainer = document.getElementById('drawupOverlayImageContainer_Display');
+    const panelImage = document.getElementById('drawupOverlayPanelImage_Element');
+    const placeholderText = document.getElementById('drawupOverlayPlaceholder_Text');
+    const titleElement = document.getElementById('drawupOverlayTitle_Element');
+    const detailsElement = document.getElementById('drawupOverlayDetails_Element');
+    const buttonColumn = document.getElementById('drawupOverlayButtonColumn_Container');
+    const contentWrapper = document.getElementById('drawupOverlayContentWrapper_Main');
+
+    let startY = 0;
+    let startHeight = 0;
+    let isDragging = false;
+    let isZoomed = false;
+    let currentImageClickHandler = null;
+
+    function setPanelHeight(vh) {
+      const clamped = Math.max(0, Math.min(vh, 100));
+      panel.style.height = clamped + 'vh';
+    }
+
+    function openOverlayReal(options = {}) {
+      const {
+        imageURL = null,
+        imgOnClick = null,
+        titleText = null,
+        detailsText = null,
+        buttonsList = [],
+        backgroundColor = '#f8f9fa',
+        textColor = '#333'
+      } = options;
+      // console.log(`imageURL ${(imageURL).toString()}`)
+      // Set background and text colors
+      panel.style.background = backgroundColor;
+      contentWrapper.style.color = textColor;
+      titleElement.style.color = textColor;
+      detailsElement.style.color = textColor;
+
+      // Handle image
+      if (imageURL) {
+        imageContainer.classList.add('show');
+        panelImage.src = imageURL;
+        panelImage.style.display = 'block';
+        placeholderText.style.display = 'none';
+        currentImageClickHandler = imgOnClick;
+      } else {
+        imageContainer.classList.remove('show');
+        panelImage.style.display = 'none';
+        placeholderText.style.display = 'block';
+        currentImageClickHandler = null;
+      }
+
+      // Handle title
+      if (titleText) {
+        titleElement.textContent = titleText;
+        titleElement.classList.add('show');
+      } else {
+        titleElement.classList.remove('show');
+      }
+
+      // Handle details
+      if (detailsText) {
+        detailsElement.textContent = detailsText;
+        detailsElement.classList.add('show');
+      } else {
+        detailsElement.classList.remove('show');
+      }
+
+      // Handle buttons
+      buttonColumn.innerHTML = '';
+      
+      // Add custom buttons
+      buttonsList.forEach(([buttonText, colorHex, id]) => {
+        const button = document.createElement('button');
+        button.id = id;
+        button.textContent = buttonText;
+        button.style.backgroundColor = colorHex;
+        button.style.color = getContrastColor(colorHex);
+        button.style.borderColor = colorHex;
+        buttonColumn.appendChild(button);
+      });
+
+      // Always add close button
+      // const closeButton = document.createElement('button');
+      // closeButton.textContent = 'Close';
+      // closeButton.addEventListener('click', closePanel);
+      // buttonColumn.appendChild(closeButton);
+
+      // Open panel
+      setPanelHeight(70);
+      backdrop.classList.add('show');
+    }
+
+    function getContrastColor(hexcolor) {
+      // Remove # if present
+      hexcolor = hexcolor.replace('#', '');
+      
+      // Convert to RGB
+      const r = parseInt(hexcolor.substr(0, 2), 16);
+      const g = parseInt(hexcolor.substr(2, 2), 16);
+      const b = parseInt(hexcolor.substr(4, 2), 16);
+      
+      // Calculate brightness
+      const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      
+      return brightness > 155 ? '#000000' : '#ffffff';
+    }
+
+   
+    backdrop.addEventListener('click', closePanel);
+
+    function closePanel() {
+      setPanelHeight(0);
+      backdrop.classList.remove('show');
+      // Reset zoom when closing
+      if (isZoomed) {
+        if (currentImageClickHandler) {
+          panelImage.style.transform = 'scale(1)';
+        } else {
+          imageContainer.style.transform = 'scale(1)';
+        }
+        imageContainer.style.cursor = 'zoom-in';
+        isZoomed = false;
+      }
+    }
+
+    // Image zoom functionality
+    const toggleZoom = (e) => {
+      e.stopPropagation();
+      
+      // Use custom click handler if provided
+      if (currentImageClickHandler) {
+        currentImageClickHandler(e);
+        return;
+      }
+      
+      // Default zoom behavior
+      if (isZoomed) {
+        if (panelImage.style.display === 'block') {
+          panelImage.style.transform = 'scale(1)';
+        } else {
+          imageContainer.style.transform = 'scale(1)';
+        }
+        imageContainer.style.cursor = 'zoom-in';
+        isZoomed = false;
+      } else {
+        if (panelImage.style.display === 'block') {
+          panelImage.style.transform = 'scale(1.5)';
+        } else {
+          imageContainer.style.transform = 'scale(1.5)';
+        }
+        imageContainer.style.cursor = 'zoom-out';
+        isZoomed = true;
+      }
+    };
+
+    imageContainer.addEventListener('click', toggleZoom);
+
+    // Drag functionality
+    const startDrag = y => {
+      isDragging = true;
+      startY = y;
+      startHeight = panel.getBoundingClientRect().height;
+      panel.style.transition = 'none';
+    };
+
+    const duringDrag = y => {
+      if (!isDragging) return;
+      const delta = startY - y;
+      const newHeight = ((startHeight + delta) / window.innerHeight) * 100;
+      setPanelHeight(newHeight);
+    };
+
+    const endDrag = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      panel.style.transition = '';
+      const currentHeight = parseFloat(panel.style.height);
+      if (currentHeight < 15) closePanel();
+      else if (currentHeight < 60) setPanelHeight(50);
+      else setPanelHeight(100);
+    };
+
+    // Touch events
+    header.addEventListener('touchstart', e => startDrag(e.touches[0].clientY), { passive: true });
+    window.addEventListener('touchmove', e => duringDrag(e.touches[0].clientY), { passive: false });
+    window.addEventListener('touchend', endDrag);
+
+    // Mouse events
+    header.addEventListener('mousedown', e => startDrag(e.clientY));
+    window.addEventListener('mousemove', e => duringDrag(e.clientY)); 
+    window.addEventListener('mouseup', endDrag);
+
+    // Expose openOverlay function globally
+    window.openOverlayReal = openOverlayReal;
+   </script>
+    
+<script type="module">
+  let pyodide;
+  let currentScript = null;
+  let currentStyle = null;
+  function markPyodideExecutionBaseline() {
+    pyodide.runPython(`
+__savr_protected_globals__ = set(globals().keys())
+if "__savr_last_page_globals__" not in globals():
+    __savr_last_page_globals__ = set()
+`);
+  }
+
+  function resetPyodidePageExecutions() {
+    if (!pyodide) return;
+    try {
+      pyodide.runPython(`
+import gc
+
+for _name in list(globals().get("__savr_last_page_globals__", set())):
+    globals().pop(_name, None)
+
+__savr_last_page_globals__ = set()
+
+gc.collect()
+`);
+    } catch (error) {
+      console.error("resetPyodidePageExecutions failed:", error);
+      window.parent.postMessage(JSON.stringify({
+        'ginni_console_error': {
+          stage: 'resetPyodidePageExecutions',
+          message: error?.message || String(error)
+        }
+      }), '*');
+    }
+  }
+
+ function hexToRgb(hex) {
+      hex = hex.replace("#", "");
+       if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
+          return { r: 0, g: 0, b: 0 };
+        }
+      return {
+        r: parseInt(hex.slice(0, 2), 16),
+        g: parseInt(hex.slice(2, 4), 16),
+        b: parseInt(hex.slice(4, 6), 16)
+      };
+    }
+
+    function rgbToHex({ r, g, b }) {
+      const toHex = (v) =>
+        Math.max(0, Math.min(255, Math.round(v)))
+          .toString(16)
+          .padStart(2, "0");
+
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+
+    // ---- Shade Logic ----
+    function shadeColor(hex, percent) {
+      const { r, g, b } = hexToRgb(hex);
+
+      const t = percent < 0 ? 0 : 255;
+      const p = Math.abs(percent);
+
+      return rgbToHex({
+        r: (t - r) * p + r,
+        g: (t - g) * p + g,
+        b: (t - b) * p + b
+      });
+    }
+
+    // ---- Generate Multiple Shades ----
+    function generateShades(hex, steps = 5) {
+      const shades = [];
+
+      for (let i = -steps; i <= steps; i++) {
+        if (i === 0) continue;
+        shades.push(shadeColor(hex, i / (steps * 2)));
+      }
+
+      return shades;
+    }
+    
+      let mediaRecorder;
+      let audioChunks = [];
+          
+    // Global resolver holder (recreated on every load)
+    let googleLoginResolver = null;
+    
+    window.addEventListener('message', function(event) {
+      // Optionally check event.origin for security
+      if (event.data && event.data.type === 'omigoogle_user' && event.data.data) {
+        const userData = event.data.data;
+        for (const key in userData) {
+          if (userData.hasOwnProperty(key)) {
+            localStorage.setItem(key, userData[key]);
+          }
+        }
+        // Optionally, trigger any UI updates or callbacks here
+        console.log('Google user data received and saved:', userData);
+      }
+    });
+    /**
+     * Creates (or returns) the Promise that other code can await
+     */
+    function getGoogleLoginPromise() {
+      if (!googleLoginResolver) {
+        return new Promise((resolve) => {
+          googleLoginResolver = resolve;
+        });
+      }
+    }
+    
+    /**
+     * Starts Google login in the SAME window
+     */
+    function openJSGoogleLoginAndWait() {
+      sessionStorage.setItem("google_login_pending", "1");
+      // window.location.href = "https://omia.pro/client-google-signin-scroperin.html";
+      const popup = window.open(
+        'https://omia.pro/client-google-signin-scroperin.html',
+        'googleSignIn',
+        'width=300,height=400'
+      );
+    }
+    
+    /**
+     * Must be called on every page load
+     * Resolves the waiting Promise if login completed
+     */
+    function resumeGoogleLoginIfNeeded() {
+      if (!sessionStorage.getItem("google_login_pending")) return;
+    
+      sessionStorage.removeItem("google_login_pending");
+    
+      if (googleLoginResolver) {
+        googleLoginResolver();
+        googleLoginResolver = null;
+      }
+    }
+    
+    /**
+     * Call this once when your app starts
+     */
+    resumeGoogleLoginIfNeeded();
+    
+    function getBaseUrl({ stripHtmlFilename = true } = {}) {
+      let raw = '';
+      try {
+        if (window.top && window.top.location && window.top.location.href) raw = window.top.location.href;
+      } catch (e) {}
+      if (!raw) raw = document.referrer || window.location.href;
+
+      try {
+        const u = new URL(raw, window.location.href);
+        u.hash = '';
+        u.search = '';
+        let url = u.href.replace('about:srcdoc', '');
+        if (stripHtmlFilename && url.endsWith('.html')) {
+          const idx = url.lastIndexOf('/');
+          url = idx > -1 ? url.substring(0, idx) : url;
+        }
+                return url.replace(/\/+$/, '');
+      } catch (err) {
+        let s = raw.split('#')[0].split('?')[0].replace('about:srcdoc', '');
+        if (stripHtmlFilename && s.endsWith('.html')) {
+          const idx = s.lastIndexOf('/');
+          s = idx > -1 ? s.substring(0, idx) : s;
+        }
+        return s.replace(/\/+$/, '');
+                      }
+    }
+    
+    async function initPyodide() {
+      // Initialize Pyodide
+      let loc = window.location.toString().split('#')[0].split('?')[0];
+
+      if (loc.endsWith('.html')) {
+        const idx = loc.lastIndexOf('/');
+        loc = idx > -1 ? loc.substring(0, idx) : '';
+      }
+      var url = getBaseUrl();
+      // if(window.location.href.startsWith('http')){
+      //   url = window.location.href;
+      //   if (url.endsWith('.html')) {
+      //     url = url.substring(0, url.lastIndexOf('/'));
+      //   }
+      // }
+      // if (url.endsWith('/')) {
+      //   url = url.slice(0, -1);
+      // }
+      pyodide = await loadPyodide({ indexURL : url + '/pyorep/'});
+      await pyodide.loadPackage("micropip");
+      const micropip = pyodide.pyimport("micropip");
+      
+      
+      
+              let code0 = await (await fetch('ginni.py')).text();
+        if (!code0.includes("import ginni")) {
+          code0 = localStorage.getItem("ginni.py");
+        }
+        if(code0) pyodide.runPython(code0);
+        
+      
+            try{
+      pyodide.globals.set("save", (key, value) => localStorage.setItem(key, value));
+      pyodide.globals.set("get", (key) => localStorage.getItem(key));
+      pyodide.globals.set("remove", (key) => localStorage.removeItem(key));
+      pyodide.globals.set("openOverlay", (options) => {
+        let data = JSON.parse(options);
+        openOverlayReal(data);
+      });
+      pyodide.globals.set("setClickAnim", (el) => {
+        el.addEventListener('click', (e) => {
+        // Add shading effect
+        el.classList.add('click-shade');
+
+        // Remove shade after 150ms
+        setTimeout(() => {
+          el.classList.remove('click-shade');
+        }, 150);
+      });
+      });
+      
+      
+      pyodide.globals.set("playRecording", (el, url) => {
+           const container = typeof el === "string" ? document.getElementById(el) : el;
+            if (!container) return;
+          
+            // Create audio element
+            const audioPlayback = document.createElement("audio");
+            audioPlayback.controls = true;
+            audioPlayback.src = url;
+                    
+            // Append to container
+            container.appendChild(audioPlayback);
+            audioPlayback.play().catch(() => {});
+      });
+      
+      
+      pyodide.globals.set("stopRecording",  async () => {
+            if (!mediaRecorder) return null;
+
+            await mediaRecorder.stop();
+          
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+          
+            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            
+            // Convert Blob → ArrayBuffer → Uint8Array
+            const arrayBuffer = await audioBlob.arrayBuffer();
+            const byteArray = new Uint8Array(arrayBuffer);
+            
+            return {
+              url: audioUrl,    
+              bytes: byteArray,       
+              blob: audioBlob         
+            };
+      });
+      
+      
+      pyodide.globals.set("startRecording", async () => {
+       try {
+          audioChunks = [];
+      
+          // Request microphone access
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+          mediaRecorder = new MediaRecorder(stream);
+      
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data && event.data.size > 0) {
+              audioChunks.push(event.data);
+            }
+          };
+      
+          mediaRecorder.onerror = (e) => {
+            console.error("MediaRecorder error:", e);
+          };
+      
+          // ⬅️ Timeslice (in ms) ensures chunks are emitted while recording
+          mediaRecorder.start(250); // every 250ms
+      
+          return true;
+        } catch (err) {
+          console.error("Error accessing microphone:", err);
+          return false;
+        }
+    });
+      
+      pyodide.globals.set("setDropdownElement", (content, parent, newId) =>{
+        function attachDropdownItem(targetElement, label, callback) {
+           if (!targetElement){
+              return;
+             }
+            // Utility to generate unique dropdown ID
+            function generateDropdownID() {
+              return `dropdown-${Math.random().toString(36).slice(2, 10)}`;
+            }
+    
+            // Closes all dropdowns on the page
+            function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+            }
+    
+    
+          // Check if dropdown already assigned
+          let dropdownId = targetElement.dataset.dropdownId;
+          let dropdown;
+    
+          if (!dropdownId) {
+            // Create dropdown
+            dropdown = document.createElement('div');
+            dropdown.className = 'dropdown-menu';
+            dropdownId = generateDropdownID();
+            dropdown.id = dropdownId;
+            targetElement.dataset.dropdownId = dropdownId;
+            document.body.appendChild(dropdown);
+    
+            // Positioning on click
+            targetElement.addEventListener('click', (e) => {
+              e.stopPropagation();
+              closeAllDropdowns();
+            
+              const rect = targetElement.getBoundingClientRect();
+            
+              dropdown.style.display = 'block'; // must show first to measure width
+            
+              const dropdownWidth = dropdown.offsetWidth;
+              const viewportWidth = window.innerWidth;
+            
+              let left;
+            
+              // Calculate horizontal center position ratio (0 = far left, 1 = far right)
+              const horizontalRatio = rect.left / viewportWidth;
+            
+              if (horizontalRatio > 0.6) {
+                // Element is toward the right side → align dropdown more left
+                left = rect.right - dropdownWidth;
+              } else if (horizontalRatio < 0.4) {
+                // Element is toward the left side → align dropdown more right
+                left = rect.left;
+              } else {
+                // Element is near center → center dropdown relative to element
+                left = rect.left + (rect.width / 2) - (dropdownWidth / 2);
+              }
+            
+              // Prevent overflow left
+              left = Math.max(8, left);
+            
+              // Prevent overflow right
+              left = Math.min(viewportWidth - dropdownWidth - 8, left);
+            
+              dropdown.style.left = `${left}px`;
+              dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+            });
+            // Global close
+            document.addEventListener('click', () => {
+              dropdown.style.display = 'none';
+            });
+          } else {
+            dropdown = document.getElementById(dropdownId);
+          }
+    
+          // Add item
+          const item = document.createElement('div');
+          item.className = `dropdown-item ${newId}`;
+          item.textContent = label;
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.style.display = 'none';
+            callback?.(label, targetElement, dropdownId);
+          });
+    
+          dropdown.appendChild(item);
+        }
+         attachDropdownItem(parent, content, (label) => {});
+      });
+      pyodide.globals.set("copyToClipboard", async (text) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+          return false;
+        }
+      });
+      
+      
+      
+      pyodide.globals.set("getHtmlFileContent", async (path) => {
+        try {
+          // Convert to string first (in case a number, object, etc. is passed)
+          path = String(path);
+          // Replace all spaces with underscores
+          path = path.split(' ').join('_');
+          // Ensure it ends with .html
+          if (!path.endsWith('.html')) {
+            path += '.html';
+          }
+          let loc = window.location.toString().split('#')[0].split('?')[0];
+
+          if (loc.endsWith('.html')) {
+            const idx = loc.lastIndexOf('/');
+            loc = idx > -1 ? loc.substring(0, idx) : '';
+          }
+          var url = getBaseUrl();
+
+          // if(window.location.href.startsWith('http')){
+          //   url = window.location.href;
+          //   if (url.endsWith('.html')) {
+          //     url = url.substring(0, url.lastIndexOf('/'));
+          //   }
+          // }
+          // if (url.endsWith('/')) {
+          //   url = url.slice(0, -1);
+          // }
+          const response = await fetch( url + '/' + path);
+          if (!response.ok) {
+            throw new Error(`Failed to load file: ${response.status}`);
+          }
+          const content = await response.text();
+          return content;
+        } catch (error) {
+          console.error("Error fetching HTML:", error);
+          return null;
+        }
+      });
+    pyodide.globals.set("render2DChart", (dataMap, chartType, parentId, chartName='Dataset') => {
+      const json = dataMap
+        .replace(/'/g, '"')                 // Change all single quotes to double quotes
+        .replace(/([{,]s*)(w+)(s*:)/g, '$1"$2"$3');
+      const obj = JSON.parse(json);
+      const map = new Map(Object.entries(obj));
+      
+      const labels = [];
+      const data = [];
+      map.forEach((value, key) => {
+        labels.push(key);
+        data.push(value);
+      });
+      const parentContainer = document.getElementsByClassName(parentId)[0];
+      const graphColor = getComputedStyle(parentContainer)
+        .getPropertyValue('--graph-color')
+        .trim();
+
+      const ctx = document.createElement('canvas'); 
+      parentContainer.replaceChildren(ctx);
+
+       ctx.id=('randid');
+      ctx.style = null;
+      let currentChart = null;
+
+    const config = {
+      type: chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: chartName,
+           borderColor: graphColor,
+           backgroundColor: generateShades(graphColor, data.length),
+            data: data
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+    
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+    
+        scales: {
+          x: {
+            display: false,   // hides axis line, ticks, labels
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            display: false,   // hides axis line, ticks, labels
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    };
+      
+      currentChart = new Chart(ctx.getContext('2d'), config);
+    });
+      pyodide.globals.set("create_element", (template, parent_id, randid) =>{
+        var parentContainer = document.getElementsByClassName(parent_id)[0];
+        var widTypeValue = "";
+        if(!parentContainer){
+          return null;
+        }else{
+         widTypeValue = parentContainer.getAttribute('savrwidtype');
+          var temp = parentContainer.querySelector('.savrintersub_' + parent_id);
+          while (temp != null){
+            parentContainer = temp;
+            temp = parentContainer.querySelector('.savrintersub_' + parent_id);
+          }
+        }
+        if (parentContainer) {
+            // Create the iframe element
+            var iframe = document.createElement('div');
+            iframe.id=(randid);
+            iframe.style.position = 'relative';
+            if(widTypeValue != null && widTypeValue == "column"){
+              iframe.style.width = '100%';
+            }else{
+              iframe.style.width = 'auto';
+            }
+           iframe.style.height = 'auto';
+            iframe.innerHTML = template;
+            // Append the iframe to the parent container
+            parentContainer.appendChild(iframe);
+            // console.log("Added widget!");
+             
+            iframe = document.getElementById(randid);
+            const absChild = iframe.children[0];
+        
+            if (absChild) {
+              // Measure the child's height including padding
+              const containerRect = iframe.getBoundingClientRect();
+              const childRect = absChild.getBoundingClientRect();
+              
+              if(widTypeValue != null && widTypeValue != "grid_grid" && widTypeValue != "grid_column"&& widTypeValue != "grid_row"){
+                 absChild.style.position = 'absolute';
+              }
+
+              // Get the distance from the top of the container to the bottom of the child
+              const height = childRect.bottom - containerRect.top;
+        
+              // Apply height to the container
+              iframe.style.height = `${height}px`;
+            }
+        } else {
+            console.log("Parent container not found!");
+        }
+      });
+      
+      pyodide.globals.set("set_child_element", (template_content, parent_id, randid) =>{
+        var parentContainer = document.getElementsByClassName(parent_id)[0];
+        if(!parentContainer){
+          parentContainer = null;//document.body;
+          return null;
+        }else{
+          var temp = parentContainer.querySelector('.savrintersub_' + parent_id);
+          while (temp != null){
+            parentContainer = temp;
+            temp = parentContainer.querySelector('.savrintersub_' + parent_id);
+          }
+        }
+        if (parentContainer) {
+            // Create the iframe element
+            var iframe = document.createElement('div');
+            iframe.id=(randid);
+            iframe.style.position = 'relative';
+            iframe.style.width = '100%';
+             iframe.innerHTML = template_content;
+            // Append the iframe to the parent container
+            parentContainer.appendChild(iframe );
+            
+            iframe = document.getElementById(randid);
+            const absChild = iframe.children[0];
+        
+            if (absChild) {
+              // Measure the child's height including padding
+              const containerRect = iframe.getBoundingClientRect();
+              const childRect = absChild.getBoundingClientRect();
+                absChild.style.position = 'absolute';
+  
+              // Get the distance from the top of the container to the bottom of the child
+              const height = childRect.bottom - containerRect.top;
+        
+              // Apply height to the container
+              iframe.style.height = `${height}px`;
+            }
+        } else {
+            console.log("Parent container not found!");
+        }
+      });
+      
+  pyodide.globals.set("make_savr_request", async (url, header, body, method) =>{
+      
+      header = JSON.parse(`${header}`);
+      var statusCode = 0;
+      // console.log('printed savr request');
+       try {
+          let fetchdata = {
+            method: method
+          }
+          if(body !== null){
+            fetchdata.body = body;
+          }
+          if(header !== null){
+            fetchdata.headers = header;
+          }
+          const response = await fetch(url, fetchdata);
+           statusCode = response.status;
+          const data = await response.text();
+          return JSON.stringify({'status': 'success', 'data': data, 'status_code':statusCode });
+        } catch (error) {
+          // console.error('Fetch error:', error);
+          return JSON.stringify({'status': 'error', 'data': (error), 'status_code': statusCode});
+        }
+      });
+     
+      pyodide.globals.set("upload_savr_file", async (fileUrl, uploadEndpoint, customHeaders) =>{
+            customHeaders = JSON.parse(customHeaders);  
+          try {
+                // Step 1: Download the file as a Blob
+                const fileResponse = await fetch(fileUrl);
+                if (!fileResponse.ok) throw new Error("Failed to download file");
+        
+                const fileBlob = await fileResponse.blob();
+        
+                // Optional: Extract filename from URL
+                const filename = fileUrl.split('/').pop() || 'upload.dat';
+        
+                // Step 2: Create FormData and append the file
+                const formData = new FormData();
+                formData.append('file', fileBlob, filename);  // "file" is the field name
+        
+                // Step 3: Set headers (do NOT set Content-Type manually for multipart/form-data)
+                const headers = {
+                    ...customHeaders
+                    // Content-Type will be set automatically by the browser
+                };
+        
+                // Step 4: Upload the file using fetch
+                const uploadResponse = await fetch(uploadEndpoint, {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                });
+        
+                if (!uploadResponse.ok) throw new Error("Failed to upload file");
+        
+                const result = await uploadResponse.json(); // or .text() depending on API
+                // console.log("Upload successful:", result);
+                return true;
+            } catch (err) {
+                console.error("Error:", err);
+            }
+            return false;
+        });
+     
+     pyodide.globals.set("get_file", async(type) => {
+        // Returns a Promise that resolves with media data
+        function selectMediaFile() {
+          return new Promise((resolve, reject) => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = type;
+      
+            input.addEventListener('change', async () =>  {
+              const file = input.files[0];
+              if (file) {
+                const arrayBuffer = await file.arrayBuffer();
+                const uint8 = new Uint8Array(arrayBuffer);
+                const mediaDetails = {
+                  name: file.name,
+                  type: file.type,
+                  size: file.size,
+                  lastModified: new Date(file.lastModified).toLocaleString(),
+                  url: URL.createObjectURL(file),
+                  bytesArray: uint8
+                };
+                resolve(mediaDetails);
+              } else {
+                reject(new Error('No file selected'));
+              }
+            });
+            
+            input.click();
+          });
+        }
+        try {
+          const mediaData = await selectMediaFile();
+          return mediaData;
+         } catch (err) {
+          console.error('File selection was cancelled or failed:', err);
+        }
+      });
+      
+      pyodide.globals.set("set_savr_visibility",(parent, visibility) => {
+        // const parent = document.getElementsByClassName(parentId)[0];
+        // if (!parent) return;
+        parent.style.display =  visibility;
+        const allDescendants = parent.querySelectorAll('*');
+        allDescendants.forEach(el => {
+          el.style.display = visibility; 
+        });
+      });
+      
+      pyodide.globals.set("show_savr_toast",(message) => {
+        const toast = document.getElementById('toastsvs');
+        toast.textContent = message;
+        toast.classList.add('show');
+  
+        // Hide after 3 seconds
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      });
+      pyodide.globals.set("showSavrOverlay",() => {
+           document.getElementById('overlaysvs').style.display = 'flex';
+      });
+      pyodide.globals.set("closeSavrOverlay",() => {
+           document.getElementById('overlaysvs').style.display = 'none';
+      });
+      pyodide.globals.set("justifySavr",(el, flux) => {
+          flux = String(flux);
+          el.style.display = "flex";
+          el.style.justifyContent = flux;
+          const firstChild = el.firstElementChild;
+          if( firstChild != null){
+            firstChild.style.position = 'relative';
+          }
+       });
+       
+      pyodide.globals.set("openGoogleLoginAndWait", async () => {
+          return new Promise((resolve, reject) => {
+            const popup = window.open("https://omia.pro/client-google-signin-scroperin.html", 'googleSignIn', 'width=500,height=700');
+            if (!popup) {
+              reject(new Error('Popup blocked'));
+              return;
+            }
+        
+            function handleMessage(event) {
+              // Optionally check event.origin for security
+              if (event.data && event.data.type === 'omigoogle_user' && event.data.data) {
+                window.removeEventListener('message', handleMessage);
+                resolve(event.data.data);
+              }
+            }
+        
+            window.addEventListener('message', handleMessage);
+        
+            // Optional: timeout or popup close detection
+            const checkClosed = setInterval(() => {
+              if (popup.closed) {
+                clearInterval(checkClosed);
+                window.removeEventListener('message', handleMessage);
+                reject(new Error('Popup closed by user'));
+              }
+            }, 500);
+          });
+       });
+       
+      pyodide.globals.set("consolelog", (msg) => window.parent.postMessage(JSON.stringify({'ginni_console': msg}), '*'));
+      pyodide.globals.set("consolelogerror", (msg) => window.parent.postMessage(JSON.stringify({'ginni_console_error': msg}), '*'));
+      pyodide.globals.set("movetopage", (msg)  =>{
+        window.parent.postMessage(JSON.stringify({'ginni_new_page': msg}), '*'); 
+        // window.location.href = msg.replace(" ", "_")+".html";
+        navigate(msg.replace(" ", "_"));
+      });
+      
+      pyodide.globals.set("opensavrlink", (msg)  =>{ window.open(msg, "_blank");});
+
+      pyodide.globals.set("playstream", (id, streamlink)  =>{
+        let played = false;
+        let element = document.getElementById(id);
+        element.innerHTML = `
+            <video width="640" height="360" controls autoplay>
+              <source src="` + streamlink +`" type="video/mp4">
+              Your settings do not support the video element.
+            </video>
+          `;
+      });
+      
+      // Run Python code
+      pyodide.runPython(`consolelog('ginniPageLoadMarker8900')`);
+      markPyodideExecutionBaseline();
+     }catch(error){
+       window.parent.postMessage(JSON.stringify({'ginni_console_error': error.message}), '*');
+     }
+  }
+  
+  window.addEventListener("error", function (event) {
+    // console.error("Global error handler:", event.error);
+     window.parent.postMessage(JSON.stringify({'ginni_console_error': event.error}));
+  });
+  
+  window.onunhandledrejection = function (event) {
+    const err = event.reason;
+  
+    const errorDetails = {
+      type: err?.name || 'UnknownError',
+      message: err?.message || 'No message provided',
+      stack: err?.stack || 'No stack trace',
+      toString: err?.toString?.() || String(err),
+    };
+  
+    const errorString = JSON.stringify(errorDetails, null, 2);
+    if(errorString.includes('pyodide.asm.js')){
+         window.parent.postMessage(JSON.stringify({'ginni_console_error': errorDetails}));
+     }
+  };
+  function extractRouteFromValue(value) {
+    if (value == null) return "";
+    let route = String(value).trim();
+
+    if (!route) return "";
+    if (route.startsWith("#")) {
+      route = route.slice(1);
+    } else if (route.includes("#")) {
+      route = route.split("#").pop();
+    }
+
+    route = route.trim();
+    if (!route) return "";
+
+    // In srcdoc iframes, href can be about:srcdoc/about:blank; never treat those as routes.
+    if (route === "about:srcdoc" || route === "about:blank" || route.startsWith("about:")) {
+      return "";
+    }
+
+    return route;
+  }
+
+  function resolveCurrentRoute(fallbackRoute) {
+    const candidates = [];
+
+    try { candidates.push(window.location.hash); } catch (_) {}
+    try { candidates.push(window.location.href); } catch (_) {}
+    try {
+      if (window.parent && window.parent !== window) {
+        candidates.push(window.parent.location.hash);
+      }
+    } catch (_) {}
+    try {
+      if (window.top && window.top !== window) {
+        candidates.push(window.top.location.hash);
+      }
+    } catch (_) {}
+
+    for (const candidate of candidates) {
+      const route = extractRouteFromValue(candidate);
+      if (route) return route;
+    }
+
+    return fallbackRoute;
+  }
+    function normalizeRoute(route) {
+    return String(route ?? "").trim().replace(/^\/+|\/+$/g, "");
+  }  
+  async function init() {
+    await initPyodide();
+    let loc  = "LedgerScreen";
+    let page404 = localStorage.getItem('404page');
+    if (page404!=null){
+      loc = page404;
+      localStorage.removeItem('404page');
+    }
+         //navigate(loc, { updateHistory: true, replaceHistory: true });
+      if (!loc) loc = normalizeRoute(entryPoint);
+            await navigate(loc, { updateHistory: true, replaceHistory: true });
+         }
+  
+  let entryPoint = "LedgerScreen";
+  let basePath;
+  
+  let navigateRequestId = 0;
+  let navigateAbortController = null;
+  
+  function cleanupRouteTransientDom() {
+    document.querySelectorAll('.dropdown-menu').forEach((menu) => menu.remove());
+  }
+  
+  async function navigate(route, options = {}) {
+    const { updateHistory = true, replaceHistory = false } = options;
+
+    const requestId = ++navigateRequestId;
+    if (navigateAbortController) {
+      navigateAbortController.abort();
+    }
+    navigateAbortController = new AbortController();
+    const { signal } = navigateAbortController;
+  
+    const isStaleRequest = () => requestId !== navigateRequestId;
+  try {
+  cleanupRouteTransientDom();
+    let fullPath = window.location.pathname;
+    let parts = fullPath.split("/");
+
+    // Remove trailing .html if present
+    if (fullPath.endsWith(".html")) {
+      parts.pop(); // remove the last segment (the .html file)
+      fullPath = parts.join("/") || "/";
+    }
+        let basePath = [fullPath, route]
+      .map(s => s.replace(/^\/|\/$/g, '')) // remove leading/trailing slashes
+      .filter(Boolean) // remove empty strings
+      .join('/'); // join with single slash
+    
+    basePath = '/' + basePath; // ensure leading slash
+
+
+    // 1️⃣ Load HTML
+    let response = await fetch(basePath + ".ginni", { signal });
+    if (isStaleRequest()) return;
+    
+    if (response.status === 404) {
+          const cleanPath = window.location.pathname.replace(/^\/|\/$/g, "");
+      basePath = "/" + cleanPath + "/" + route.replace(/^\//, "");
+          }
+
+    // Fetch the HTML content
+    var htmlContent = await fetch(basePath + `.ginni`, { signal }).then(r => r.text());
+    if (isStaleRequest()) return;
+    
+    // Fallback to localStorage if content does not have code/content
+    if (!htmlContent.includes('"code":') && !htmlContent.includes('"content":')) {
+      htmlContent = localStorage.getItem(route);
+    }
+
+    htmlContent = JSON.parse(htmlContent);
+    if (isStaleRequest()) return;
+     document.getElementById("app").innerHTML = htmlContent['content']??'';
+
+    // 2️⃣ Remove previous CSS / Apply new CSS
+    applyPageCSS(htmlContent['css']);
+
+    // 6️⃣ Run page init via pyodide
+    resetPyodidePageExecutions();
+    if (isStaleRequest()) return;
+    pyodide.runPython(htmlContent['code']);
+    parts = basePath.split("/");
+
+    // Remove trailing .html if present
+    parts.pop(); // remove the last segment (the .html file)
+    fullPath = parts.join("/") || "/";
+    
+    // Optional: update URL without reload
+    // if (!isStaleRequest() && updateHistory) {
+    //     history.pushState({}, "", fullPath + '#' + route );
+    // }
+    if (!isStaleRequest() && updateHistory) {
+        if (replaceHistory) {
+          history.replaceState({}, "", fullPath + '#' + route);
+        } else {
+          history.pushState({}, "", fullPath + '#' + route);
+        }
+    }
+  }catch (error) {
+    if (error?.name === "AbortError") return;
+    console.log("error:", error);
+  }
+}
+
+
+ 
+ window.onpopstate = () => {
+   // const route = location.pathname.replace("/", "") || "home";
+    const route = (location.href.split('#').pop() || entryPoint) ; 
+    navigate(route, { updateHistory: false });
+  };
+  
+  let currentStyleTag = null;
+  
+  function applyPageCSS(cssText) {
+    // Remove previous page CSS
+    if (currentStyleTag) {
+      currentStyleTag.remove();
+    }
+  
+    // Create new style tag
+    currentStyleTag = document.createElement("style");
+    currentStyleTag.setAttribute("data-page-style", "true");
+    currentStyleTag.textContent = cssText;
+  
+    document.head.appendChild(currentStyleTag);
+  }
+
+  window.addEventListener("error", function (event) {
+    // console.error("Global error handler:", event.error);
+     window.parent.postMessage(JSON.stringify({'ginni_console_error': event.error}));
+  });
+  
+  window.onunhandledrejection = function (event) {
+    const err = event.reason;
+  
+    const errorDetails = {
+      type: err?.name || 'UnknownError',
+      message: err?.message || 'No message provided',
+      stack: err?.stack || 'No stack trace',
+      toString: err?.toString?.() || String(err),
+    };
+  
+    const errorString = JSON.stringify(errorDetails, null, 2);
+    if(errorString.includes('pyodide.asm.js')){
+         window.parent.postMessage(JSON.stringify({'ginni_console_error': errorDetails}));
+     }
+  };
+
+  await init();
+  </script>
+
+</body>
+</html>
+
+   

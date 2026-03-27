@@ -1,0 +1,458 @@
+    <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>BookKeep</title>
+
+  <style>
+    body { margin: 0; font-family: Arial; }
+    nav { background: #222; padding: 10px; }
+    nav a { color: white; margin-right: 15px; cursor: pointer; }
+    
+    
+           /* Hide scrollbars for Chrome, Safari, and Opera */
+            *::-webkit-scrollbar {
+                display: none;
+            }
+           
+            html, body {
+                overflow-x: hidden; 
+                overflow-y: hidden; 
+                margin: 0; 
+                padding: 0;
+            }
+
+            * {
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            
+            .shifting-gradient {
+                /*background-size: 600% 600%;
+                animation: gradientFlux 8s ease infinite;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                transition: transform 0.3s;*/
+              }
+          
+           #top-progress {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 5px; /* minimalist, thinner height */
+              background: transparent;
+              z-index: 9999;
+            }
+          
+            /* Progress bar */
+            #top-progress .bar {
+              height: 100%;
+              width: 0%;
+              background: #5544FF; /* minimalist neutral gray */
+              transition: none; /* no width transition in indeterminate mode */
+              will-change: transform;
+            }
+          
+            /* Indeterminate (continuous) animation */
+            #top-progress .bar.indeterminate {
+              width: 24%; /* slightly smaller for subtle look */
+              animation: indeterminate 1.2s linear infinite;
+            }
+          
+            @keyframes indeterminate {
+              0% { transform: translateX(0%); }
+              100% { transform: translateX(400%); }
+            }
+              .animated-gradient-box:hover {
+                transform: scale(1.05);
+              }
+          
+              @keyframes gradientFlux {
+                0% {
+                  background-position: 0% 50%;
+                }
+                50% {
+                  background-position: 100% 50%;
+                }
+                100% {
+                  background-position: 0% 50%;
+                }
+              }
+              
+            .click-shade {
+              background-color: #e0e0e0 !important;
+            }
+            
+            input:focus {
+              border: none;        
+              outline: none;  
+            }
+            
+             .overlaysvs {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 999;
+              }
+          
+              .spinner {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 20px;
+                animation: spin 1s linear infinite;
+              }
+          
+              @keyframes spin {
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+          
+              /* Toast */
+              .toastsvs {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background-color: #333;
+                color: #fff;
+                padding: 15px 25px;
+                border-radius: 4px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+                z-index: 1000;
+              }
+          
+              .toastsvs.show {
+                opacity: 1;
+              }
+              .dropdown-menu {
+                position: absolute;
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                min-width: 140px;
+                overflow-y: auto;
+                max-height: 300px;
+                z-index: 1000;
+                display: none;
+                elevation: 4;
+              }
+          
+              .dropdown-item {
+                padding: 10px 16px;
+                cursor: pointer;
+                white-space: nowrap;
+              }
+          
+              .dropdown-item:hover {
+                background: #f0f0f0;
+              }
+              
+               button {
+                margin: 20px;
+                padding: 12px 20px;
+                font-size: 16px;
+              }
+              
+              .drawupOverlay-panel-container {
+              position: fixed;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              height: 0;
+              background: #aa0000;
+              box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+              border-top-left-radius: 8px;
+              border-top-right-radius: 8px;
+              transition: height 0.3s ease;
+              /* overflow: hidden; */
+              z-index: 1000;
+              display: flex;
+              flex-direction: column;
+            }
+        
+            .drawupOverlay-panel-header-draggable {
+              height: 30px;
+              background: #00000080;
+              text-align: center;
+              line-height: 30px;
+              font-weight: normal;
+              font-size: 14px;
+              color: #666;
+              cursor: grab;
+              user-select: none;
+              border-top-left-radius: 8px;
+              border-top-right-radius: 8px;
+              flex-shrink: 0;
+            }
+        
+            .drawupOverlay-panel-header-draggable::before {
+              content: '';
+              display: inline-block;
+              width: 30px;
+              height: 3px;
+              background: #ccc;
+              border-radius: 2px;
+              vertical-align: middle;
+              margin-right: 8px;
+            }
+        
+            .drawupOverlay-panel-content-scrollable {  
+                flex: 1 1 auto;
+                overflow-y: auto;
+                display: flex;
+                justify-content: center;
+                padding: 20px;
+                /* Hide scrollbar but keep functionality */
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE and Edge */
+            }
+        
+            .drawupOverlay-content-wrapper-main {
+              width: 100%;
+              max-width: 500px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 20px;
+            }
+        
+            .drawupOverlay-image-container-display {
+              width: 500px;
+              height: 500px;
+              min-height: 500px;
+              max-width: 100%;
+              position: relative;
+              /* overflow: hidden; */
+              border-radius: 8px;
+              cursor: zoom-in;
+              background: #ddd;
+              display: none;
+              align-items: center;
+              justify-content: center;
+              border: 2px solid #999;
+              order: -1; /* Makes this first element */
+            }
+        
+            .drawupOverlay-image-container-display.show {
+              display: flex;
+            }
+        
+            .drawupOverlay-content-wrapper-main img {
+              width: 500px;
+              height: 500px;
+              object-fit: cover;
+              border-radius: 8px;
+              transition: transform 0.3s ease;
+              display: block;
+            }
+        
+            .drawupOverlay-content-wrapper-main img.zoomed {
+              transform: scale(2);
+              cursor: zoom-out;
+            }
+        
+            .drawupOverlay-placeholder-text-element {
+              color: #666;
+              font-size: 18px;
+              text-align: center;
+              font-weight: bold;
+            }
+        
+            .drawupOverlay-title-text-element {
+              font-size: 24px;
+              font-weight: bold;
+              text-align: center;
+              display: none;
+            }
+        
+            .drawupOverlay-title-text-element.show {
+              display: block;
+            }
+        
+            .drawupOverlay-details-text-element {
+              font-size: 16px;
+              color: #555;
+              text-align: justify;
+              line-height: 1.6;
+              width: 100%;
+              max-width: 480px;
+              padding: 0 10px;
+              display: none;
+            }
+        
+            .drawupOverlay-details-text-element.show {
+              display: block;
+              text-align: justify;
+            }
+        
+            .drawupOverlay-button-column-container {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              gap: 12px;
+              align-items: center;
+            }
+        
+            .drawupOverlay-button-column-container button {
+              width: 80%;
+              max-width: 300px;
+              padding: 14px 20px;
+              font-size: 16px;
+              border: 1px solid #ddd;
+              background: #fff;
+              color: #333;
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.2s;
+            }
+        
+            .drawupOverlay-button-column-container button:hover {
+              background: #f0f0f0;
+              border-color: #999;
+            }
+        
+            .drawupOverlay-backdrop-modal {
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background: rgba(0,0,0,0.1);
+              z-index: 999;
+              display: none;
+            }
+        
+            .drawupOverlay-backdrop-modal.show {
+              display: block;
+            }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+ <div class="drawupOverlay-backdrop-modal" id="drawupOverlayBackdrop_Modal"></div>
+
+  <div class="drawupOverlay-panel-container" id="drawupOverlayPanel_Container">
+    <div class="drawupOverlay-panel-header-draggable" id="drawupOverlayHeader_Draggable"></div>
+    <div class="drawupOverlay-panel-content-scrollable">
+      <div class="drawupOverlay-content-wrapper-main" id="drawupOverlayContentWrapper_Main">
+        <div class="drawupOverlay-image-container-display" id="drawupOverlayImageContainer_Display">
+          <img id="drawupOverlayPanelImage_Element" src="" alt="Panel Image" style="display: none;" />
+          <div class="drawupOverlay-placeholder-text-element" id="drawupOverlayPlaceholder_Text">No Image</div>
+        </div>
+        <div class="drawupOverlay-title-text-element" id="drawupOverlayTitle_Element">Welcome to the Panel</div>
+        <div class="drawupOverlay-details-text-element" id="drawupOverlayDetails_Element">
+          This is a detailed description that wraps around the content beneath the title.
+        </div>
+        <div class="drawupOverlay-button-column-container" id="drawupOverlayButtonColumn_Container">
+          <button id="drawupOverlayCloseBtn_Default">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="overlaysvs" id="overlaysvs">
+    <svg class="spinner" viewBox="0 0 50 50">
+        <circle
+          cx="25"
+          cy="25"
+          r="20"
+          fill="none"
+          stroke="#007BFF"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-dasharray="90,150"
+        />
+      </svg>
+  </div>
+
+  <div class="toastsvs" id="toastsvs">This is a toast!</div>
+  
+       <script type="text/javascript" src="pyodide.js"></script>
+
+
+    
+  <script>
+        let entryPoint = "LedgerScreen";
+
+  async function init() {
+        function getRouteFromUrl() {
+        let href;
+        try {
+          href = (window.top && window.top.location && window.top.location.href) ? window.top.location.href : window.location.href;
+        } catch (e) {
+          href = document.referrer || window.location.href;
+        }
+      
+        // prefer hash (#list or #/list)
+        const hash = href.split('#')[1];
+        if (hash !== undefined && hash !== '') {
+          return hash.replace(/^\/+|\/+$/g, ''); // trim leading/trailing slashes
+        }
+      
+        // fallback to path (remove query/hash, trim trailing slash)
+        const clean = href.split('#')[0].split('?')[0].replace(/\/+$/, '');
+                  try {
+          const u = new URL(clean);
+          const parts = u.pathname.split('/').filter(Boolean);
+          return parts.length ? parts[parts.length - 1] : '';
+        } catch {
+          const parts = clean.split('/').filter(Boolean);
+          return parts.length ? parts[parts.length - 1] : '';
+        }
+      }
+      
+      // usage
+      const loc = getRouteFromUrl() || entryPoint ; // e.g. "list" (no leading slash)
+      navigate(loc, { updateHistory: true, replaceHistory: true });
+  }
+  
+  let basePath;
+  async function navigate(route,  options = {}) {
+      let fullPath = window.location.pathname;
+      var parts = fullPath.split("/");
+      // Remove trailing .html if present
+      if (fullPath.endsWith(".html")) {
+        parts.pop(); // remove the last segment (the .html file)
+        fullPath = parts.join("/") || "/";
+      }
+
+    basePath = fullPath + `/` +route;
+
+    // 1️⃣ Load HTML
+    var htmlContent = await fetch(basePath+`.ginni`).then(r => r.text());
+    if(!htmlContent.includes('"code":') && !htmlContent.includes('"content":')){
+      htmlContent = localStorage.getItem(route);
+    }else{
+          localStorage.setItem('404page', route);
+    }
+    parts =  basePath.split("/");
+    parts.pop(); // remove the last segment (the .html file)
+    fullPath = parts.join("/") || "/";
+    window.location.href = fullPath;
+    //history.pushState({}, "", `/`+ route);
+  }
+
+ window.onpopstate = () => {
+   // const route = location.pathname.replace("/", "") || "home";
+    const route = (location.href.split('#').pop() || entryPoint) ; 
+    navigate(route, { updateHistory: false });
+  };
+  
+  let currentStyleTag = null;
+  
+  init();
+</script>
+
+
+</body>
+</html>
+   
