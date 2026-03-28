@@ -1499,7 +1499,7 @@ gc.collect()
   }  
   async function init() {
     await initPyodide();
-    let loc  = "screen";
+    let loc  = "list";
     let page404 = localStorage.getItem('404page');
     if (page404!=null){
       loc = page404;
@@ -1510,7 +1510,7 @@ gc.collect()
             await navigate(loc, { updateHistory: true, replaceHistory: true });
          }
   
-  let entryPoint = "screen";
+  let entryPoint = "list";
   let basePath;
   
   let navigateRequestId = 0;
